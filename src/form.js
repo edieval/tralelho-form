@@ -1,30 +1,44 @@
 import React, { useState } from "react";
 import { Form, Select } from "antd";
 
+import tree from "./assets/tree.json";
+import fr from "./assets/i18n/fr.json";
+
 const { Option } = Select;
 
 function MedicalForm() {
   const [form] = Form.useForm();
-  const [fields, setFields] = useState([{ value: null }]);
+  const startingQuestion = tree[0];
+
+  const [fields, setFields] = useState([
+    { object: startingQuestion, value: null }
+  ]);
+  // console.log(fr[startingQuestion.id]);
 
   const formLayout = {
     labelCol: {
-      span: 6
+      span: 12
     },
     wrapperCol: {
       span: 24
     }
   };
 
-  function handleChange(value) {
-    console.log(`selected ${value}`);
-    handleAdd();
+  function handleChange(questionId) {
+    console.log(`selected ${questionId}`);
+    handleAdd(questionId);
   }
 
-  function handleAdd() {
+  function handleAdd(questionId) {
     const values = [...fields];
-    values.push({ value: null });
-    setFields(values);
+    const question = tree.find(branch => branch.id === questionId);
+    if (question) {
+      values.push({
+        object: tree.find(branch => branch.id === questionId),
+        value: null
+      });
+      setFields(values);
+    }
   }
 
   return (
@@ -37,17 +51,17 @@ function MedicalForm() {
         form={form}
         name="control-hooks"
       >
-        <button type="button" onClick={() => handleAdd()}>
-          +
-        </button>
-
         {fields.map((field, idx) => {
           return (
-            <Form.Item label="Question 1" key={`${field}-${idx}`}>
-              <Select defaultValue="1" style={{ width: 360 }} onChange={handleChange}>
-                <Option value="1">Response 1</Option>
-                <Option value="2">Response 2</Option>
-                <Option value="3">Response 3</Option>
+            <Form.Item label={fr[field.object.id]} key={`${field}-${idx}`}>
+              <Select style={{ width: 360 }} onChange={handleChange}>
+                {field.object.questions.map((questionId, idy) => {
+                  return (
+                    <Option value={questionId} key={`${questionId}-${idy}`}>
+                      {fr[questionId]}
+                    </Option>
+                  );
+                })}
               </Select>
             </Form.Item>
           );
