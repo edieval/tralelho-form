@@ -10,10 +10,9 @@ function MedicalForm() {
   const [form] = Form.useForm();
   const startingQuestion = tree[0];
 
-  const [fields, setFields] = useState([
+  let [fields, setFields] = useState([
     { object: startingQuestion, value: null }
   ]);
-  // console.log(fr[startingQuestion.id]);
 
   const formLayout = {
     labelCol: {
@@ -24,20 +23,24 @@ function MedicalForm() {
     }
   };
 
-  function handleChange(questionId) {
-    console.log(`selected ${questionId}`);
-    handleAdd(questionId);
+  function removeChildrens(index) {
+    fields = fields.slice(0, index + 1);
+    setFields(fields);
+  }
+
+  function handleChange(responseId, questionIndex) {
+    removeChildrens(questionIndex);
+    handleAdd(responseId);
   }
 
   function handleAdd(questionId) {
-    const values = [...fields];
     const question = tree.find(branch => branch.id === questionId);
     if (question) {
-      values.push({
+      fields.push({
         object: tree.find(branch => branch.id === questionId),
         value: null
       });
-      setFields(values);
+      setFields(fields);
     }
   }
 
@@ -53,11 +56,14 @@ function MedicalForm() {
       >
         {fields.map((field, idx) => {
           return (
-            <Form.Item label={fr[field.object.id]} key={`${field}-${idx}`}>
-              <Select style={{ width: 360 }} onChange={handleChange}>
+            <Form.Item label={fr[field.object.id]} key={field.object.id}>
+              <Select
+                style={{ width: 480 }}
+                onChange={e => handleChange(e, idx)}
+              >
                 {field.object.questions.map((questionId, idy) => {
                   return (
-                    <Option value={questionId} key={`${questionId}-${idy}`}>
+                    <Option value={questionId} key={questionId}>
                       {fr[questionId]}
                     </Option>
                   );
