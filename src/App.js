@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import { Row } from 'antd';
-import MedicalForm from "./form";
+import MedicalForm from "./Medical-form";
 
 function App() {
   return (

@@ -6,7 +6,7 @@ import fr from "./assets/i18n/fr.json";
 
 const { Option } = Select;
 
-function MedicalForm() {
+const MedicalForm = () => {
   const [form] = Form.useForm();
   const startingQuestion = tree[0];
 
