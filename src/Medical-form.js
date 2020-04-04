@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Form, Select } from "antd";
+import { Form, Select, Radio } from "antd";
 
 import tree from "./assets/tree.json";
 import fr from "./assets/i18n/fr.json";
+import ar from "./assets/i18n/ar_EG.json";
 
 const { Option } = Select;
 
@@ -13,6 +14,7 @@ const MedicalForm = () => {
   let [fields, setFields] = useState([
     { object: startingQuestion, value: null }
   ]);
+  let [locale, setLocale] = useState(fr);
 
   const formLayout = {
     labelCol: {
@@ -44,6 +46,11 @@ const MedicalForm = () => {
     }
   }
 
+  function changeLocale(e) {
+    const localeValue = e.target.value;
+    setLocale(localeValue);
+  }
+
   return (
     <div className="App">
       <h1>Questionnaire de santé</h1>
@@ -54,9 +61,20 @@ const MedicalForm = () => {
         form={form}
         name="control-hooks"
       >
+        <div className="change-locale">
+          <Radio.Group value={locale} onChange={e => changeLocale(e)}>
+            <Radio.Button key="fr" value={fr}>
+              Français
+            </Radio.Button>
+            <Radio.Button key="ar" value={ar}>
+              عربي
+            </Radio.Button>
+          </Radio.Group>
+        </div>
+
         {fields.map((field, idx) => {
           return (
-            <Form.Item label={fr[field.object.id]} key={field.object.id}>
+            <Form.Item label={locale[field.object.id]} key={field.object.id}>
               <Select
                 style={{ width: 480 }}
                 onChange={e => handleChange(e, idx)}
@@ -64,7 +82,7 @@ const MedicalForm = () => {
                 {field.object.questions.map((questionId, idy) => {
                   return (
                     <Option value={questionId} key={questionId}>
-                      {fr[questionId]}
+                      {locale[questionId]}
                     </Option>
                   );
                 })}
@@ -75,5 +93,5 @@ const MedicalForm = () => {
       </Form>
     </div>
   );
-}
+};
 export default MedicalForm;
