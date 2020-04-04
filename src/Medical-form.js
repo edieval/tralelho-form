@@ -12,17 +12,17 @@ const MedicalForm = () => {
   const startingQuestion = tree[0];
 
   let [fields, setFields] = useState([
-    { object: startingQuestion, value: null }
+    { object: startingQuestion, value: null },
   ]);
   let [locale, setLocale] = useState(fr);
 
   const formLayout = {
     labelCol: {
-      span: 12
+      span: 12,
     },
     wrapperCol: {
-      span: 24
-    }
+      span: 24,
+    },
   };
 
   function removeChildrens(index) {
@@ -36,11 +36,11 @@ const MedicalForm = () => {
   }
 
   function handleAdd(questionId) {
-    const question = tree.find(branch => branch.id === questionId);
+    const question = tree.find((branch) => branch.id === questionId);
     if (question) {
       fields.push({
-        object: tree.find(branch => branch.id === questionId),
-        value: null
+        object: tree.find((branch) => branch.id === questionId),
+        value: null,
       });
       setFields(fields);
     }
@@ -62,7 +62,7 @@ const MedicalForm = () => {
         name="control-hooks"
       >
         <div className="change-locale">
-          <Radio.Group value={locale} onChange={e => changeLocale(e)}>
+          <Radio.Group value={locale} onChange={(e) => changeLocale(e)}>
             <Radio.Button key="fr" value={fr}>
               Français
             </Radio.Button>
@@ -77,7 +77,7 @@ const MedicalForm = () => {
             <Form.Item label={locale[field.object.id]} key={field.object.id}>
               <Select
                 style={{ width: 480 }}
-                onChange={e => handleChange(e, idx)}
+                onChange={(e) => handleChange(e, idx)}
               >
                 {field.object.questions.map((questionId, idy) => {
                   return (
