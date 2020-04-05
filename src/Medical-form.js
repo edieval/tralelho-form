@@ -74,8 +74,11 @@ const MedicalForm = () => {
 
         {fields.map((field, idx) => {
           return (
-            <Form.Item label={locale[field.object.question]} key={field.object.id}>
-              {(field.object.answers && field.object.answers.length > 0) &&
+            <Form.Item
+              label={locale[field.object.question]}
+              key={field.object.id}
+            >
+              {field.object.answers && field.object.answers.length > 0 && (
                 <Select
                   style={{ width: 480 }}
                   onChange={(e) => handleChange(e, idx)}
@@ -88,7 +91,7 @@ const MedicalForm = () => {
                     );
                   })}
                 </Select>
-              }
+              )}
             </Form.Item>
           );
         })}
