@@ -1,7 +1,7 @@
-/node_modules
-/src
-/.idea
-.gcloudignore
-.gitignore
-.nvmrc
-README.md
+# Ignore all
+/*
+
+# Except:
+!/build/
+!package.json
+!package-lock.json
