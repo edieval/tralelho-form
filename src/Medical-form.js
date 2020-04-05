@@ -74,19 +74,21 @@ const MedicalForm = () => {
 
         {fields.map((field, idx) => {
           return (
-            <Form.Item label={locale[field.object.id]} key={field.object.id}>
-              <Select
-                style={{ width: 480 }}
-                onChange={(e) => handleChange(e, idx)}
-              >
-                {field.object.questions.map((questionId, idy) => {
-                  return (
-                    <Option value={questionId} key={questionId}>
-                      {locale[questionId]}
-                    </Option>
-                  );
-                })}
-              </Select>
+            <Form.Item label={locale[field.object.question]} key={field.object.id}>
+              {(field.object.answers && field.object.answers.length > 0) &&
+                <Select
+                  style={{ width: 480 }}
+                  onChange={(e) => handleChange(e, idx)}
+                >
+                  {field.object.answers.map((answerId) => {
+                    return (
+                      <Option value={answerId} key={answerId}>
+                        {locale[answerId]}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              }
             </Form.Item>
           );
         })}
