@@ -6,14 +6,17 @@ import fr from "./assets/i18n/fr.json";
 import ar from "./assets/i18n/ar_EG.json";
 
 const { Option } = Select;
+let path = ["35"];
 
 const MedicalForm = () => {
   const [form] = Form.useForm();
+
   const startingQuestion = tree[0];
 
   let [fields, setFields] = useState([
     { object: startingQuestion, value: null },
   ]);
+
   let [locale, setLocale] = useState(fr);
 
   const formLayout = {
@@ -28,6 +31,7 @@ const MedicalForm = () => {
   function removeChildrens(index) {
     fields = fields.slice(0, index + 1);
     setFields(fields);
+    path = fields.map((field) => field.object.id);
   }
 
   function handleChange(responseId, questionIndex) {
@@ -35,20 +39,45 @@ const MedicalForm = () => {
     handleAdd(responseId);
   }
 
-  function handleAdd(questionId) {
-    const question = tree.find((branch) => branch.id === questionId);
-    if (question) {
-      fields.push({
-        object: tree.find((branch) => branch.id === questionId),
-        value: null,
-      });
-      setFields(fields);
+  function findTreeLeaf(tree, arrayNode, paths) {
+    if (!Array.isArray(arrayNode)) {
+      return arrayNode;
+    }
+    const clonedPath = [...paths];
+    const firstId = clonedPath.shift();
+    let leaf = arrayNode.find((branch) => branch.id === firstId);
+    if (!leaf) {
+      leaf = tree.find((branch) => branch.id === firstId);
+    }
+    if (clonedPath.length === 0) {
+      return leaf;
+    } else {
+      return findTreeLeaf(tree, leaf.answers, clonedPath);
     }
   }
 
   function changeLocale(e) {
     const localeValue = e.target.value;
     setLocale(localeValue);
+  }
+
+  function handleAdd(questionId) {
+    path.push(questionId);
+    const node = findTreeLeaf(tree, tree, path);
+    if (node) {
+      if (node.forward) {
+        fields.push({
+          object: findTreeLeaf(tree, tree, [node.forward]),
+          value: null,
+        });
+      } else {
+        fields.push({
+          object: node,
+          value: null,
+        });
+      }
+      setFields(fields);
+    }
   }
 
   return (
@@ -83,10 +112,10 @@ const MedicalForm = () => {
                   style={{ width: 480 }}
                   onChange={(e) => handleChange(e, idx)}
                 >
-                  {field.object.answers.map((answerId) => {
+                  {field.object.answers.map((answer) => {
                     return (
-                      <Option value={answerId} key={answerId}>
-                        {locale[answerId]}
+                      <Option value={answer.id} key={answer.id}>
+                        {locale[answer.id]}
                       </Option>
                     );
                   })}
